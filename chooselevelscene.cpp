@@ -3,7 +3,7 @@
 #include <QPainter>
 #include "mypushbutton.h"
 #include <QtDebug>
-
+#include "playscene.h"
 ChooseLevelScene::ChooseLevelScene(QWidget *parent) : QMainWindow(parent)
 {
     //设置窗口固定大小
@@ -46,14 +46,36 @@ ChooseLevelScene::ChooseLevelScene(QWidget *parent) : QMainWindow(parent)
         menuBtn->setParent(this);
         menuBtn->move(25 + (i%4)*70 , 130+ (i/4)*70);
 
+        //监听选择关卡按钮的信号槽
+        connect(menuBtn,&MyPushButton::clicked,[=](){
+           // qDebug() << "select: " << i;
+            if(pScene == NULL)  //游戏场景最好不用复用，直接移除掉创建新的场景
+            {
+                this->hide();
+                pScene = new PlayScene(i+1); //将选择的关卡号 传入给PlayerScene
+
+                pScene->show();
+
+                connect(pScene,&PlayScene::chooseSceneBack,[=](){
+                    this->show();
+                    delete pScene;
+                    pScene = NULL;
+                });
+
+
+            }
+        });
+
+
+
         //按钮上显示的文字
-        QLabel * label = new QLabel;
-        label->setParent(this);
+        QLabel * label = new QLabel;//可显示文字、gif图等
+        label->setParent(menuBtn);
         label->setFixedSize(menuBtn->width(),menuBtn->height());
         label->setText(QString::number(i+1));
         label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter); //设置居中
-        label->move(25 + (i%4)*70 , 130+ (i/4)*70);
-        label->setAttribute(Qt::WA_TransparentForMouseEvents,true);  //鼠标事件穿透
+        //label->move(25 + (i%4)*70 , 130+ (i/4)*70);
+        label->setAttribute(Qt::WA_TransparentForMouseEvents,true);  //鼠标事件穿透  label会挡住图片按钮
     }
 
 }
