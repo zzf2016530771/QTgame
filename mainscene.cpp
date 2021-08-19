@@ -51,8 +51,13 @@ MainScene::MainScene(QWidget *parent)
         //延时0.5秒后 进入选择场景
         QTimer::singleShot(500, this,[=](){
             this->hide();//点击开始后自动隐藏开始菜单
+            chooseScene->setGeometry(this->geometry());//使三个窗口切换时也在同一个位置
             chooseScene->show();//显示选择关卡的场景
 
+            connect(chooseScene,&ChooseLevelScene::chooseSceneBack,[=](){
+               this->setGeometry(chooseScene->geometry());
+                this->show();
+            });
         });
 
     });

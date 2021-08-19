@@ -53,10 +53,11 @@ ChooseLevelScene::ChooseLevelScene(QWidget *parent) : QMainWindow(parent)
             {
                 this->hide();
                 pScene = new PlayScene(i+1); //将选择的关卡号 传入给PlayerScene
-
+                pScene->setGeometry(this->geometry());
                 pScene->show();
 
                 connect(pScene,&PlayScene::chooseSceneBack,[=](){
+                    this->setGeometry(pScene->geometry());
                     this->show();
                     delete pScene;
                     pScene = NULL;
